@@ -6,12 +6,13 @@ import { useWebsites } from "@/hooks/useWebsite";
 import { processWebsiteData } from "@/lib/process-website-data";
 import React from "react";
 
-const Dashoboard = () => {
-  // Use the provided hook to fetch website data
-  const websitesData = useWebsites();
-  // Process the raw website data
-  const websites = processWebsiteData(websitesData);
+const Dashboard = () => {
+  const { websites: websitesData } = useWebsites();
 
+  console.log("websites received from backend", websitesData);
+
+  const websites = processWebsiteData(websitesData);
+  console.log("processed websites are", websites);
   //   const handleAddWebsite = (name: string, url: string) => {
   //     console.log(`Adding website: ${name} (${url})`);
   //   };
@@ -27,9 +28,11 @@ const Dashoboard = () => {
   };
 
   return (
-    <div className="container mx-auto mt-4 max-w-md">
-      <h2>Dashboard Page</h2>
-      <AddWebsiteDialog />
+    <div className="container mx-auto mt-4 max-w-lg">
+      <div className="flex justify-between items-center mb-4">
+        <h2>Dashboard Page</h2>
+        <AddWebsiteDialog />
+      </div>
       <div>
         {websites.length === 0 ? (
           <div className="flex h-40 items-center justify-center rounded-lg border border-dashed">
@@ -38,7 +41,7 @@ const Dashoboard = () => {
             </p>
           </div>
         ) : (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="space-y-4">
             {websites.map((website) => (
               <WebsiteCard
                 key={website.id}
@@ -54,4 +57,4 @@ const Dashoboard = () => {
   );
 };
 
-export default Dashoboard;
+export default Dashboard;

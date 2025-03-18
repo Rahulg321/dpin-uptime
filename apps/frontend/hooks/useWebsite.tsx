@@ -1,50 +1,40 @@
 "use client";
 
 import { useAuth } from "@clerk/nextjs";
-import { useEffect, useState } from "react";
 import axios from "axios";
+import useSwr from "swr";
 import { API_BACKEND_URL } from "@/config";
-
-interface Website {
-  id: string;
-  url: string;
-  ticks: {
-    id: string;
-    createdAt: string;
-    status: string;
-    latency: number;
-  }[];
-}
+import { WebsiteWithTicks } from "db/client";
 
 export function useWebsites() {
   const { getToken } = useAuth();
 
-  const [websites, setWebsites] = useState<Website[]>([]);
-
-  async function refreshWebsites() {
+  // Define a fetcher that gets the token and makes an authorized request
+  const fetcher = async (url: string) => {
     const token = await getToken();
+    return axios
+      .get(url, { headers: { Authorization: token } })
+      .then((res) => res.data);
+  };
 
-    const response = await axios.get(`${API_BACKEND_URL}/api/v1/websites`, {
-      headers: {
-        Authorization: token,
-      },
-    });
+  // Use SWR at the top level of the hook
+  const { data, error, isValidating, mutate } = useSwr<WebsiteWithTicks[]>(
+    `${API_BACKEND_URL}/api/v1/websites`,
+    fetcher,
+    {
+      // Refresh the data every minute
+      refreshInterval: 1000 * 60,
+    }
+  );
 
-    setWebsites(response.data);
-  }
+  // Set websites to the fetched data or default to an empty array
+  const websites = data || [];
 
-  useEffect(() => {
-    const interval = setInterval(
-      () => {
-        refreshWebsites();
-      },
-      1000 * 60 * 1 //every 1 min
-    );
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
-
-  return { websites, refreshWebsites };
+  return {
+    websites,
+    error,
+    isLoading: !data && !error,
+    refreshWebsites: mutate,
+    isValidating,
+  };
 }

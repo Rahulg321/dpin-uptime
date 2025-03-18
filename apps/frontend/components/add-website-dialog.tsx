@@ -65,10 +65,12 @@ export function AddWebsiteDialog() {
             { url },
             {
               headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `${token}`,
               },
             }
           );
+
+          console.log("Response is", response);
           refreshWebsites();
           toast.success("Website added successfully");
           setUrl("");
@@ -86,7 +88,7 @@ export function AddWebsiteDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="" variant={"secondary"}>
+        <Button className="hover:cursor-pointer" variant={"secondary"}>
           Add Website
         </Button>
       </DialogTrigger>

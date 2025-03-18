@@ -4,6 +4,7 @@ import { prismaClient } from "db/client";
 import cors from "cors";
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 
@@ -40,6 +41,8 @@ app.post("/api/v1/website", authMiddleware, async (req, res) => {
   const { url } = req.body;
   const userId = req.userId!;
 
+  console.log("url", url);
+
   if (!userId) {
     res
       .json({
@@ -63,16 +66,15 @@ app.post("/api/v1/website", authMiddleware, async (req, res) => {
     },
   });
 
+  console.log("successfully added website");
+
   res.json({
     id: data.id,
   });
 });
 
-app.get("/api/v1/website/:id", authMiddleware, (req, res) => {});
-
 app.get("/api/v1/websites", authMiddleware, async (req, res) => {
   const userId = req.userId!;
-
   const websites = await prismaClient.website.findMany({
     where: {
       userId,
@@ -83,6 +85,7 @@ app.get("/api/v1/websites", authMiddleware, async (req, res) => {
     },
   });
 
+  console.log("made a successfull call to get all websites", websites);
   res.json(websites);
 });
 
@@ -112,6 +115,6 @@ app.delete("/api/v1/website/", authMiddleware, async (req, res) => {
   });
 });
 
-app.listen(3000, () => {
-  console.log("listening on port 3000");
+app.listen(8000, () => {
+  console.log("listening on port 8000");
 });

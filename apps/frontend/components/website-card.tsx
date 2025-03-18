@@ -39,7 +39,7 @@ export function WebsiteCard({
           <div
             className={cn(
               "h-3 w-3 rounded-full",
-              website.status === "up" ? "bg-green-500" : "bg-red-500"
+              website.status === "good" ? "bg-green-500" : "bg-red-500"
             )}
           />
           <CardTitle className="text-lg">{website.name}</CardTitle>
@@ -47,12 +47,12 @@ export function WebsiteCard({
         <div
           className={cn(
             "flex h-8 w-8 items-center justify-center rounded-full",
-            website.status === "up"
+            website.status === "good"
               ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
               : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
           )}
         >
-          {website.status === "up" ? (
+          {website.status === "good" ? (
             <CheckCircle className="h-5 w-5" />
           ) : (
             <XCircle className="h-5 w-5" />

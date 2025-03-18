@@ -3,6 +3,7 @@
 
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// docker run -d -e POSTGRES_DB=mydb -e POSTGRES_PASSWORD=testpass123 -e POSTGRES_USER=postgres -p "6500:5432" postgres
 
 generator client {
   provider = "prisma-client-js"
@@ -27,11 +28,12 @@ model Website {
 }
 
 model Validator {
-  id        String        @id @default(uuid())
-  publicKey String
-  location  String
-  ip        String
-  ticks     WebsiteTick[]
+  id             String        @id @default(uuid())
+  publicKey      String
+  location       String
+  ip             String
+  pendingPayouts Int           @default(0)
+  ticks          WebsiteTick[]
 }
 
 model WebsiteTick {
@@ -39,7 +41,7 @@ model WebsiteTick {
 
   websiteId   String
   validatorId String
-  createdAt   DateTime
+  createdAt   DateTime      @default(now())
   status      WebsiteStatus
   latency     Float
   Website     Website       @relation(fields: [websiteId], references: [id])
